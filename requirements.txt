@@ -1,0 +1,5 @@
+streamlit
+redis
+requests
+beautifulsoup4
+asyncio
