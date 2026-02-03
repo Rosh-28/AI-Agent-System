@@ -24,7 +24,7 @@ async def run_task(plan, user_input, stream):
         "input": user_input
     }
 
-    stream("📤 Manager: Enqueuing task into Redis queue")
+    stream("Manager: Enqueuing task into Redis queue")
     push_task(task_payload)
     await asyncio.sleep(1)
 

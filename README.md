@@ -24,7 +24,7 @@ Make sure you have the following installed:
 # 1️⃣ Clone the Repository
 ```bash
 git clone <your-github-repo-url>
-cd AI-Agent
+cd AI-Agent-System
 ```
 
 # 2️⃣ Install Dependencies
@@ -92,43 +92,43 @@ Ask the system to do any task from the following:
 
 A Planner component interprets the user’s natural-language input and classifies it into a supported task type such as document analysis, code review, or web research. Based on this classification, the planner implicitly defines the sequence of steps required to complete the task.
 
-Converts unstructured input into structured task intent
-Defines which agents will be involved
-Keeps planning separate from execution
+- Converts unstructured input into structured task intent
+- Defines which agents will be involved
+- Keeps planning separate from execution
 
 ## Manager & Asynchronous Execution
 
 The Manager/Orchestrator acts as the central coordination layer. It initializes the execution pipeline, manages retries, and streams partial progress updates to the user interface. Instead of executing tasks directly, the orchestrator enqueues work into a Redis message queue, enabling decoupled and asynchronous execution. All agent calls are wrapped in async/await logic to ensure non-blocking operation during I/O-heavy tasks such as LLM inference and web requests.
 
-Controls execution flow without performing reasoning
-Implements async execution and retry handling
-Streams real-time status updates to the UI
+- Controls execution flow without performing reasoning
+- Implements async execution and retry handling
+- Streams real-time status updates to the UI
 
 ## Redis Message Queue
 
 Redis is used as a lightweight message queue between the manager and agents. Tasks are pushed into Redis and later dequeued for execution, ensuring FIFO processing and isolation between orchestration and agent execution.
 
-Decouples task submission from execution
-Supports scalability and workload buffering
+- Decouples task submission from execution
+- Supports scalability and workload buffering
 
 ## Specialized Agents
 
 The system uses multiple specialized agents, each with a single responsibility.
 
-Clear agent boundaries
-LLMs used as tools, not controllers
-Independent and replaceable components
+- Clear agent boundaries
+- LLMs used as tools, not controllers
+- Independent and replaceable components
 
 ## Manual Batching & LLM Usage
 
 To improve efficiency and demonstrate scalability awareness, manual batching is implemented at the agent level. Inputs such as document chunks or web articles are explicitly grouped into fixed-size batches before being sent to the LLM. This batching logic is written manually in code, giving full control over batch size and execution behavior rather than relying on framework-level auto-batching.
 
-Explicit batching logic in code
-Reduced number of LLM calls
-Clear throughput vs latency trade-offs
+- Explicit batching logic in code
+- Reduced number of LLM calls
+- Clear throughput vs latency trade-offs
 
 ## Architecture Flow 
- ![Flow](Rag.png)
+ ![Flow](Agent-flow.png)
 
 
 ## Scaling Issues
