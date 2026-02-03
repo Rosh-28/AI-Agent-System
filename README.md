@@ -125,7 +125,6 @@ To improve efficiency and demonstrate scalability awareness, manual batching is 
 
 - Explicit batching logic in code
 - Reduced number of LLM calls
-- Clear throughput vs latency trade-offs
 
 ## Architecture Flow 
  ![Flow](Agent-flow.png)
@@ -133,15 +132,16 @@ To improve efficiency and demonstrate scalability awareness, manual batching is 
 
 ## Scaling Issues
 
-One scaling issue encountered was the use of a single Redis queue and a single worker execution loop. While this design is sufficient for demonstration and low concurrency, it can become a bottleneck under high load, as all agent tasks compete for the same queue and are processed sequentially. This limits throughput and increases latency when multiple tasks are submitted concurrently.
+One scaling issue encountered was the use of a single Redis queue and a single worker execution loop. While this design is sufficient for demonstration and low concurrency, it can become a bottleneck under high load, as all agent tasks compete for the same queue and are processed sequentially. This limits throughput and increases latency when multiple tasks are submitted concurrently. So, for this purpose separate queues can be used for each agent so all agents work independently without affecting others.
 
 ## Design Changes
 
 A design decision that would be changed in a production setting is the use of a rule-based planner for task classification. Although this approach is simple and deterministic, it lacks flexibility and does not generalize well to diverse or ambiguous user inputs. In a real-world system, this component would be replaced with an LLM-based task router that generates structured execution plans dynamically, with validation enforced at the orchestration layer.
+Also, retry mechanism can be improved as failure causes entire execution of the agent from the start.
 
 ## Trade-offs made during development
 
-Several trade-offs were made to balance clarity, reliability, and scope. The system prioritizes explicit orchestration and transparency over maximum performance, resulting in simpler but more understandable execution flow. Redis workers are embedded within the orchestrator to reduce deployment complexity, at the cost of true horizontal scalability. Additionally, document input is handled as pasted text instead of file uploads to keep the focus on agent coordination rather than data ingestion. These trade-offs were intentional to emphasize core agentic concepts while keeping the system lightweight and easy to explain.
+Several trade-offs were made to balance clarity, reliability, and scope. The system prioritizes explicit orchestration and transparency over maximum performance, resulting in simpler but more understandable execution flow. Redis workers are embedded within the manager to reduce complexity. Additionally, document input is handled as pasted text instead of file uploads to keep the focus on agent coordination rather than data ingestion. These trade-offs were intentional to emphasize core agentic concepts while keeping the system lightweight and easy to explain.
 
 
 

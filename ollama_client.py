@@ -1,10 +1,11 @@
+import json
 import requests
 import os
 import dotenv
 dotenv.load_dotenv()
 
-OLLAMA_URL = os.getenv("Ollama_URL")
-MODEL = os.getenv("Ollama_Model")
+OLLAMA_URL = os.getenv("OLLAMA_URL")
+MODEL = os.getenv("OLLAMA_MODEL")
 
 def call_ollama(prompt: str) -> str:
     response = requests.post(
@@ -16,4 +17,13 @@ def call_ollama(prompt: str) -> str:
         },
         timeout=60
     )
-    return response.json()["response"]
+
+    result = response.text.strip()
+    for line in reversed(result.splitlines()):
+        try:
+            data = json.loads(line)
+            if "response" in data:
+                return data["response"]
+        except json.JSONDecodeError:
+            continue
+    return result

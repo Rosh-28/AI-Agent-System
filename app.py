@@ -23,6 +23,8 @@ if run_btn and user_input:
     async def exec():
         return await run_task(plan, user_input, stream)
 
-    result = asyncio.run(exec())
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    result = loop.run_until_complete(exec())
     output.success("✅ Completed")
     st.write(result)
